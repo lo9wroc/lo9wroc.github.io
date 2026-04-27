@@ -1,0 +1,201 @@
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+TRÓJKĄT 
+
+a = float(input("Podaj a: "))
+b = float(input("Podaj b: "))
+c = float(input("Podaj c: "))
+
+if a + b > c and a + c > b and b + c > a:
+    print("To jest trójkąt")
+else:
+    print("To NIE jest trójkąt")
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+NWD NWW
+
+a = int(input("Podaj a: "))
+b = int(input("Podaj b: "))
+
+# liczymy NWD
+x, y = a, b
+while y != 0:
+    x, y = y, x % y
+
+nwd = x
+nww = abs(a * b) // nwd
+
+print("NWD =", nwd)
+print("NWW =", nww)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+CIĄG 
+a = int(input("Podaj pierwszy wyraz: "))
+n = int(input("Ile wyrazów: "))
+
+for i in range(n):
+    print(a)
+    a = a + 2   # zmień wzór tutaj jeśli trzeba
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+BINARNE
+
+n = int(input("Podaj liczbę: "))
+wynik = ""
+
+while n > 0:
+    wynik = str(n % 2) + wynik
+    n = n // 2
+
+print("Binarnie:", wynik)
+
+
+
+Z 2 na 10:
+
+binarny = input("Podaj liczbę binarną: ")
+
+wynik = 0
+
+for bit in binarny:
+    wynik = wynik * 2 + int(bit)
+
+print("Dziesiętnie:", wynik)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Z TXT
+
+with open("plik.txt", "r") as f:
+    for linia in f:
+        slowo = linia.strip()
+
+        if slowo == slowo[::-1]:
+            print(slowo, "- palindrom")
+        else:
+            print(slowo, "- nie")
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+PIERWSZA
+
+n = int(input("Podaj liczbę: "))
+pierwsza = True
+
+if n < 2:
+    pierwsza = False
+else:
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            pierwsza = False
+            break
+
+if pierwsza:
+    print("Pierwsza")
+else:
+    print("Nie pierwsza")
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+CEZAR
+
+tekst = input("Podaj tekst: ")
+p = int(input("Przesunięcie: "))
+wynik = ""
+
+for z in tekst:
+    if z.islower():
+        wynik += chr((ord(z) - 97 + p) % 26 + 97)
+    elif z.isupper():
+        wynik += chr((ord(z) - 65 + p) % 26 + 65)
+    else:
+        wynik += z
+
+print("Wynik:", wynik)
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+SZUKANIE NA LIŚCIE 
+
+lista = list(map(int, input("Podaj liczby: ").split()))
+szukana = int(input("Szukana liczba: "))
+
+znaleziono = False
+
+for x in lista:
+    if x == szukana:
+        znaleziono = True
+        break
+
+if znaleziono:
+    print("Znaleziono")
+else:
+    print("Nie znaleziono")
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+MIN MAX
+
+lista = list(map(int, input("Podaj liczby: ").split()))
+
+min_val = lista[0]
+max_val = lista[0]
+
+for x in lista:
+    if x < min_val:
+        min_val = x
+    if x > max_val:
+        max_val = x
+
+print("Min:", min_val)
+print("Max:", max_val)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+POSORTOWANA BINARNA
+
+lista = list(map(int, input("Podaj posortowane liczby: ").split()))
+szukana = int(input("Szukana: "))
+
+lewo = 0
+prawo = len(lista) - 1
+znaleziono = False
+
+while lewo <= prawo:
+    srodek = (lewo + prawo) // 2
+
+    if lista[srodek] == szukana:
+        znaleziono = True
+        break
+    elif lista[srodek] < szukana:
+        lewo = srodek + 1
+    else:
+        prawo = srodek - 1
+
+if znaleziono:
+    print("Znaleziono")
+else:
+    print("Nie znaleziono")
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+BUBBLE
+
+lista = list(map(int, input("Podaj liczby: ").split()))
+
+n = len(lista)
+
+for i in range(n):
+    for j in range(n - 1):
+        if lista[j] > lista[j + 1]:
+            lista[j], lista[j + 1] = lista[j + 1], lista[j]
+
+print("Posortowane:", lista)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+WYBÓR
+
+lista = list(map(int, input("Podaj liczby: ").split()))
+
+n = len(lista)
+
+for i in range(n):
+    min_i = i
+    for j in range(i + 1, n):
+        if lista[j] < lista[min_i]:
+            min_i = j
+    lista[i], lista[min_i] = lista[min_i], lista[i]
+
+print("Posortowane:", lista)
