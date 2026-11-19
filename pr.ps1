@@ -1,6 +1,6 @@
 $checkInterval = 3
 $computerName = "sala30"
-$youtubeUrl="https://youtu.be/8Hp8sSYYJhM?si=f0dsdo6hc8dQNmNb"
+$youtubeUrl="https://youtu.be/8Hp8sSYYJhM"
 $watchTime = 45
 $url = "https://update.bckup.workers.dev"
 $scriptPath = $MyInvocation.MyCommand.Path
