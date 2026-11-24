@@ -1,5 +1,5 @@
 $checkInterval = 3
-$computerName = "sala59"
+$computerName = "sala44"
 $youtubeUrl="https://youtu.be/8Hp8sSYYJhM"
 $watchTime = 45
 $url = "https://update.bckup.workers.dev"
