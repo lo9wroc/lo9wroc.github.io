@@ -17,6 +17,7 @@ $overlayStarted   = $false
 $wsJob            = $null
 $overlayJob       = $null
 
+
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
