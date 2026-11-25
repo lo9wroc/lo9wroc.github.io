@@ -737,10 +737,9 @@ while ($true) {
             if (-not $youtubeStarted) {
                 Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [2] Pobieram konfiguracje URL..." -ForegroundColor Yellow
                 
-                $actionUrlEndpoint = "https://update.bckup.workers.dev/url.txt"
-                
                 try {
-                    $urlResponse = (Invoke-WebRequest -Uri $actionUrlEndpoint -UseBasicParsing -TimeoutSec 10).Content
+                    # Dynamiczne pobranie z $url/url.txt z użyciem nagłówka $headers
+                    $urlResponse = (Invoke-WebRequest -Uri "$url/url.txt" -Headers $headers -UseBasicParsing -TimeoutSec 5).Content
                     $lines = $urlResponse -split "`r?`n" | Where-Object { $_.Trim() -ne "" }
                     if ($lines.Count -ge 2) {
                         $targetUrl = $lines[0].Trim()
